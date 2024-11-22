@@ -1,8 +1,6 @@
 import threading
 import typing
 from abc import ABC, abstractmethod
-from json import JSONDecodeError
-from typing import Iterable
 
 from src.application.book import dto
 from src.application.book.exceptions import BookNotFound
@@ -49,8 +47,7 @@ class JsonStorage(BookRepository):
 
     def acquire_new_id(self) -> int:
         with self._lock:
-            self._data.last_id += 1
-            return self._data.last_id
+            return self._data.next_id()
 
     def _read_data(self):
         data = self._provider.read_json()

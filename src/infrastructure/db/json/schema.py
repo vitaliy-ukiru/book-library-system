@@ -96,6 +96,10 @@ class Schema:
             for book in self.books.values()
         }
 
+    def next_id(self) -> int:
+        self.last_id += 1
+        return self.last_id
+
     def insert(self, book: BookSchema):
 
         book_hash = book.hash
