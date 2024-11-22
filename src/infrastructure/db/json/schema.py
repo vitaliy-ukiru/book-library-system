@@ -107,13 +107,16 @@ class Schema:
         self._hashes[book_hash] = book.id
 
     def update(self, book: BookSchema):
-        existing_book = self._hashes.get(book.hash)
-        if existing_book:  # Book with same hash can already exist but with different id.
-            raise BookAlreadyExists(existing_book)
-
+        # Lookup book from schema
         book_prev = self.books.get(book.id)
         if not book_prev:
-            raise BookAlreadyExists(book.id)
+            raise BookNotFound()
+
+        # Lookup book with same hash
+        existing_book_id = self._hashes.get(book.hash)
+        if existing_book_id and existing_book_id != book_prev.id:
+            # Book with same hash can already exist but with different id
+            raise BookAlreadyExists(existing_book_id)
 
         self.books[book.id] = book
 
