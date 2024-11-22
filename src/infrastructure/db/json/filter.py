@@ -24,11 +24,11 @@ class FilterFactory:
 
     @staticmethod
     def title(title: str) -> Filter:
-        return lambda book: title in book.title
+        return lambda book: title.lower() in book.title.lower()
 
     @staticmethod
     def author(author: str) -> Filter:
-        return lambda book: author in book.author
+        return lambda book: author.lower() in book.author.lower()
 
     @staticmethod
     def year(year: int) -> Filter:
