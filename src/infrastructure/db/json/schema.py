@@ -67,8 +67,8 @@ class BookSchema:
         Calculates hash for book. It needs to exclude same books (Title+Author+Year)
         """
         h = hashlib.sha1(usedforsecurity=False)
-        h.update(self.title.encode())
-        h.update(self.author.encode())
+        h.update(self.title.lower().encode())
+        h.update(self.author.lower().encode())
         h.update(str(self.year).encode())
         return h.hexdigest()
 
