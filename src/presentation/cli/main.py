@@ -11,10 +11,10 @@ def _build_parser():
         description="Book library system",
     )
     parser.add_argument("--config",
-                        type=str, help="Path to config file", default="configs/config.ini")
+                        type=str, help="Path to config file",
+                        default="configs/config.ini")
     subparsers = parser.add_subparsers(dest="cmd")
 
-    # Команда добавления книги
     parser_add = subparsers.add_parser(
         name=COMMAND_ADD,
         help='Add book',
@@ -24,18 +24,14 @@ def _build_parser():
     parser_add.add_argument('title', type=str, help='Book title')
     parser_add.add_argument('author', type=str, help='Author of the book')
     parser_add.add_argument('year', type=int, help='Year of publication')
-    # parser_add.set_defaults(func=self._add_book)
 
-    # Команда удаления книги
     parser_delete = subparsers.add_parser(
         name=COMMAND_DELETE,
         help='Delete book',
         description="Delete book by id"
     )
     parser_delete.add_argument('id', type=int, help='Book id')
-    # parser_delete.set_defaults(func=self._delete_book)
 
-    # Команда поиска книг
     parser_search = subparsers.add_parser(
         name=COMMAND_SEARCH,
         help='Search books',
@@ -51,8 +47,6 @@ def _build_parser():
         help="Number of page. Available only in set page_size in config",
         default=1,
     )
-    # parser_search.set_defaults(func=self._search_books)
-
     parser_all = subparsers.add_parser(
         name=COMMAND_ALL,
         help="Output all books",
@@ -64,7 +58,6 @@ def _build_parser():
         help="Number of page. Available only in set page_size in config",
     )
 
-    # Команда изменения статуса книги
     parser_status = subparsers.add_parser(
         name=COMMAND_STATUS,
         help='Change book status',
@@ -74,8 +67,6 @@ def _build_parser():
     group = parser_status.add_mutually_exclusive_group(required=True)
     group.add_argument("--return", action='store_true', dest="status", help="Set available status")
     group.add_argument("--take", action='store_false', dest="status", help="Set taken status")
-
-    # parser_status.set_defaults(func=self._change_status)
 
     return parser
 
