@@ -5,7 +5,7 @@ from argparse import Namespace
 from src.application.book import dto
 from src.application.book.exceptions import BookAlreadyExists, BookNotFound
 from src.application.book.service import Service
-from src.application.common.pagination import Pagination
+from src.application.common.pagination import Pagination, PaginationResult
 from src.config.config import Config
 from src.domain.book.entity import Book
 from src.domain.book.exceptions import BookAlreadyInLibrary, BookAlreadyTaken
@@ -24,6 +24,42 @@ def format_book(book: Book) -> str:
             f'Author: {book.author!r}\n'
             f'Year: {book.year}\n'
             f'Status: {book.status.title()}')
+
+
+def _choice_page(pagination: PaginationResult):
+    next_page = pagination.next_page
+    prev_page = pagination.prev_page
+
+    if next_page and prev_page:
+        prompt = "Next/Prev (N/P)"
+    elif next_page:
+        prompt = "Next (N)"
+    elif prev_page:
+        prompt = "Prev (P)"
+    else:
+        return
+
+    while True:
+        choice = input(f"Select page change: {prompt}: ")
+        if len(choice) < 1:
+            print("Invalid choice")
+            continue
+
+        match choice[0].lower():
+            case '>' | 'n':
+                if not next_page:
+                    print("Next page not available")
+                    continue
+
+                return +1
+            case '<' | 'p':
+                if not prev_page:
+                    print("Prev page not available")
+                    continue
+
+                return -1
+            case _:
+                print("Invalid choice")
 
 
 class CLI:
@@ -85,9 +121,9 @@ class CLI:
                 filters=filters,
                 pagination=Pagination()
             )
-            for books in books.data:
-                print("---------")
-                print(format_book(books))
+            print("---------")
+            for book in books.data:
+                print(format_book(book))
                 print("---------")
 
             print(f"Total books: {books.pagination.total}")
@@ -126,43 +162,13 @@ class CLI:
                 print("---------")
 
             print(f"Page {page + 1} of {math.ceil(books.pagination.total / page_size)}")
-            next_page = books.pagination.next_page
-            prev_page = books.pagination.prev_page
-
-            if next_page and prev_page:
-                prompt = "Next/Prev (N/P)"
-            elif next_page:
-                prompt = "Next (N)"
-            elif prev_page:
-                prompt = "Prev (P)"
-            else:
+            try:
+                page_delta = _choice_page(books.pagination)
+            except KeyboardInterrupt:
+                print()
                 return
-
-            while True:
-                choice = input(f"Select page change: {prompt}: ")
-                if len(choice) < 1:
-                    print("Invalid choice")
-                    continue
-
-                match choice[0].lower():
-                    case '>' | 'n':
-                        if not next_page:
-                            print("Next page not available")
-                            continue
-
-                        page += 1
-                    case '<' | 'p':
-                        if not prev_page:
-                            print("Prev page not available")
-                            continue
-
-                        page -= 1
-                    case _:
-                        print("Invalid choice")
-                        continue
-
-                os.system('cls' if os.name == 'nt' else 'clear')
-                break
+            page += page_delta
+            os.system('cls' if os.name == 'nt' else 'clear')
 
     def _all_books(self, args: Namespace):
         page = args.page - 1 if args.page else 0
