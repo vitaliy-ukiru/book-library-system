@@ -150,7 +150,7 @@ class Schema:
             return cls()
 
         if not isinstance(data, dict):
-            raise MappingError("Invalid root schema format")
+            raise MappingError("Invalid type of schema ")
 
         last_id = data.get("last_id")
         if last_id is None:
@@ -165,9 +165,8 @@ class Schema:
 
         books = {}
         for i, book_raw in enumerate(books_raw):
-
             if not isinstance(book_raw, dict):
-                raise MappingError(f"The object `book` must be a dictionary for book with index {i}")
+                raise MappingError(f"The object `book` must be a dict for book with index {i}")
             try:
                 book = BookSchema(
                     id=int(book_raw["id"]),
