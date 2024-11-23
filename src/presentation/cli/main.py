@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 
 from src.application.book.service import Service
-from src.cli.cli import COMMAND_ALL, COMMAND_STATUS, COMMAND_SEARCH, COMMAND_DELETE, COMMAND_ADD, CLI
+from src.presentation.cli.cli import COMMAND_ALL, COMMAND_STATUS, COMMAND_SEARCH, COMMAND_DELETE, COMMAND_ADD, CLI
 from src.infrastructure.config_loader import load_config
 from src.infrastructure.db.json import FileJsonProvider, JsonStorage
 
