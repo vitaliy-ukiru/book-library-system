@@ -60,6 +60,14 @@ class JsonStorage(BookRepository):
         self._provider.write_json(data)
 
     def save_book(self, book: dto.NewBook) -> int:
+        """
+        Save book to storage.
+        Duplicates of books will raise error.
+
+        :param book: Object of new book
+        :return: ID of saved book
+        :raise BookAlreadyExists: If book with same title+author+year already exists:
+        """
         book_id = self.acquire_new_id()
         book_model = BookSchema(
             id=book_id,
@@ -74,6 +82,10 @@ class JsonStorage(BookRepository):
         return book_id
 
     def find_books(self, filters: dto.BookFilter, pagination: Pagination) -> list[Book]:
+        """
+        Find book by filters. Filters field will union (logical AND).
+        And paginate result.
+        """
         books_iter = self._data.books.values()
 
         if not filters.is_empty:
@@ -89,6 +101,10 @@ class JsonStorage(BookRepository):
         return books
 
     def get_book_count(self, filters: dto.BookFilter) -> int:
+        """
+        Count books by filters. Filters field will union (logical AND).
+        :return: Count of accepted books.
+        """
         if filters.is_empty:
             return len(self._data.books)
 
@@ -104,6 +120,10 @@ class JsonStorage(BookRepository):
         self._save_data()
 
     def update_book(self, book: Book):
+        """
+        Full updates book in storage.
+        :param book: Updated book object
+        """
         book_obj = BookSchema(
             id=book.id,
             title=book.title,

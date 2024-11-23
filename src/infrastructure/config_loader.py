@@ -5,6 +5,9 @@ from src.config.config import Config, ConfigFormatError, ConfigMissingField
 
 
 def load_config(path: str) -> Config:
+    """
+    Load config in INI format to common app config format.
+    """
     parser = ConfigParser()
 
     parser.read(path)
