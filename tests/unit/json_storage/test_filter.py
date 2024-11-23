@@ -67,6 +67,3 @@ def test_from_dto(good_book):
 
     assert good_filter(good_book)
     assert not bad_filter(good_book)
-
-
-
