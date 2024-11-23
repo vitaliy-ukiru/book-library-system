@@ -10,7 +10,8 @@ def _build_parser():
     parser = ArgumentParser(
         description="Book library system",
     )
-    parser.add_argument("--config", type=str, help="Path to config file", default="config.ini")
+    parser.add_argument("--config",
+                        type=str, help="Path to config file", default="configs/config.ini")
     subparsers = parser.add_subparsers(dest="cmd")
 
     # Команда добавления книги
