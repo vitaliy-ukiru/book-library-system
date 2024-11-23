@@ -1,6 +1,9 @@
 from dataclasses import dataclass
+from typing import TypeAlias
 
 from src.application.common.dto import DTO
+from src.application.common.pagination import PaginatedItemsDTO
+from src.domain.book import entity
 from src.domain.book.vo import BookStatus
 
 
@@ -15,15 +18,6 @@ class CreateBook(DTO):
 class NewBook(CreateBook):
     status: BookStatus
 
-    @classmethod
-    def from_create_book_dto(cls, book: CreateBook, status: BookStatus):
-        return cls(
-            title=book.title,
-            author=book.author,
-            year=book.year,
-            status=status,
-        )
-
 
 @dataclass(frozen=True)
 class BookFilter(DTO):
@@ -32,3 +26,4 @@ class BookFilter(DTO):
     year: int | None = None
 
 
+Books: TypeAlias = PaginatedItemsDTO[entity.Book]
