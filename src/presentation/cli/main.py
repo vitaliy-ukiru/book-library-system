@@ -84,7 +84,7 @@ def main():
     parser = _build_parser()
     args = parser.parse_args()
 
-    if not hasattr(args, 'cmd'):
+    if not hasattr(args, 'cmd') or args.cmd is None:
         parser.print_help()
         exit(0)
 
