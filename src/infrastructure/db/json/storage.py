@@ -73,11 +73,16 @@ class JsonStorage(BookRepository):
 
     def find_books(self, filters: dto.BookFilter, pagination: Pagination) -> list[Book]:
         filter_func = FilterFactory.from_dto(filters)
-        books = list(filter(filter_func, self._data.books.values()))
+        books = list(
+            map(
+                BookSchema.to_entity,
+                filter(filter_func, self._data.books.values())
+            )
+        )
 
         # TODO: improve pagination for don't get extra books
         offset = pagination.offset if pagination.offset else 0
-        limit = pagination.limit if pagination.limit else len(books)
+        limit = pagination.limit+offset if pagination.limit else len(books)
 
         return books[offset:limit]
 
