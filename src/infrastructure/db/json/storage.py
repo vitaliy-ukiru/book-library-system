@@ -10,6 +10,7 @@ from src.domain.book.entity import Book
 from src.domain.book.vo import BookStatus
 from .filter import FilterFactory
 from .schema import BookSchema, Schema
+from .utils import paginate_items
 
 
 class IOProvider(ABC):
@@ -21,6 +22,7 @@ class IOProvider(ABC):
     Also, it'll help in test.
 
     """
+
     @abstractmethod
     def read_json(self) -> typing.Any:
         """
@@ -72,26 +74,28 @@ class JsonStorage(BookRepository):
         return book_id
 
     def find_books(self, filters: dto.BookFilter, pagination: Pagination) -> list[Book]:
-        filter_func = FilterFactory.from_dto(filters)
-        books = list(
-            map(
-                BookSchema.to_entity,
-                filter(filter_func, self._data.books.values())
-            )
+        books_iter = self._data.books.values()
+
+        if not filters.is_empty:
+            books_iter = filter(FilterFactory.from_dto(filters), books_iter)
+
+        # noinspection PyTypeChecker
+        books = paginate_items(
+            pagination,
+            len(self._data.books),
+            map(BookSchema.to_entity, books_iter),
         )
 
-        # TODO: improve pagination for don't get extra books
-        offset = pagination.offset if pagination.offset else 0
-        limit = pagination.limit+offset if pagination.limit else len(books)
-
-        return books[offset:limit]
+        return books
 
     def get_book_count(self, filters: dto.BookFilter) -> int:
+        if filters.is_empty:
+            return len(self._data.books)
+
         filter_func = FilterFactory.from_dto(filters)
         count = 0
-        for book in self._data.books.values():
-            if filter_func(book):
-                count += 1
+        for _ in filter(filter_func, self._data.books.values()):
+            count += 1
 
         return count
 

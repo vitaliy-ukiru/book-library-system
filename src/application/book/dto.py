@@ -25,5 +25,11 @@ class BookFilter(DTO):
     author: str | None = None
     year: int | None = None
 
+    @property
+    def is_empty(self) -> bool:
+        return (self.title is None and
+                self.author is None and
+                self.year is None)
+
 
 Books: TypeAlias = PaginatedItemsDTO[entity.Book]

@@ -12,6 +12,7 @@ class Filter(Protocol):
 
     Filters must be just callable object that returns bool.
     """
+
     @abstractmethod
     def __call__(self, book: BookSchema) -> bool:
         raise NotImplementedError
@@ -51,4 +52,8 @@ class FilterFactory:
 
     @classmethod
     def from_dto(cls, filters: BookFilter) -> Filter:
-        return cls.and_(tuple(cls._yield_filters(filters)))
+        filters = tuple(cls._yield_filters(filters))
+        if len(filters) == 1:
+            return filters[0]
+
+        return cls.and_(filters)
