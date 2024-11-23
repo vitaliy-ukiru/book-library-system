@@ -26,5 +26,5 @@ class FileJsonProvider(IOProvider):
                 raise err
 
     def write_json(self, data: typing.Any) -> None:
-        with open(self._path, mode="w+", encoding="utf-8") as f:
+        with self._path.open(mode="w+", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False)
